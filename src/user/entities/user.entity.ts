@@ -1,5 +1,12 @@
 import { Score } from 'src/score/entities/score.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -18,7 +25,7 @@ export class User {
   @Column({ nullable: false, unique: true })
   email: string;
 
-  @Column({ nullable: false, default: "123" })
+  @Column({ nullable: false, default: '123' })
   password: string;
 
   @Column({ nullable: true })
@@ -26,5 +33,4 @@ export class User {
 
   @OneToMany(() => Score, (score) => score.user)
   scores: Score[];
-
 }

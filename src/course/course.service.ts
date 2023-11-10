@@ -10,18 +10,17 @@ export class CourseService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepo: Repository<Course>,
-  ) { }
+  ) {}
 
   async create(createCourseDto: CreateCourseDto) {
     return await this.courseRepo.save(createCourseDto);
   }
 
-
   async getall() {
     return await this.courseRepo.find({
       where: {
-        isDel: 0
-      }
+        isDel: 0,
+      },
     });
   }
   async findAll(search: string) {
@@ -40,8 +39,8 @@ export class CourseService {
     try {
       const hp = await this.courseRepo.findOne({
         where: {
-          id: id
-        }
+          id: id,
+        },
       });
 
       if (hp) {
@@ -50,14 +49,13 @@ export class CourseService {
         if (updatedHp) {
           return updatedHp;
         } else {
-          throw new Error("Update failed");
+          throw new Error('Update failed');
         }
       } else {
-        throw new Error("Course not found");
+        throw new Error('Course not found');
       }
     } catch (error) {
       throw new Error(error.message);
     }
   }
-
 }

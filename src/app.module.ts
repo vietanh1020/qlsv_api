@@ -13,8 +13,8 @@ import { HocphanModule } from './hocphan/hocphan.module';
       type: 'mysql',
       host: 'localhost',
       port: 3306,
-      username: 'root',
-      password: '',
+      username: 'user',
+      password: 'password',
       database: 'qlsv',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
@@ -27,4 +27,4 @@ import { HocphanModule } from './hocphan/hocphan.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

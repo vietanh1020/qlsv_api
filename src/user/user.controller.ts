@@ -1,20 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { LoginDto, CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getAllSv() {
-    return await this.userService.getAll();
+  async getAllSv(@Query() query: any) {
+    return await this.userService.getAll(query.search);
   }
 
-  @Get('/:student_name')
-  async getSVbyName(@Param('student_name') student_name: string) {
-    return await this.userService.getbyName(student_name);
-  }
   @Get('/masv/:msv')
   async getSVbyMsv(@Param('msv') msv: string) {
     return await this.userService.getSvbyMsv(msv);
