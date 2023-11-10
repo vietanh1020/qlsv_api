@@ -58,4 +58,32 @@ export class CourseService {
       throw new Error(error.message);
     }
   }
+
+  async totalSVRegister(id: number) {
+    const data: any = await this.courseRepo
+      .createQueryBuilder('Course')
+      .leftJoinAndSelect('Course.hocphans', 'Hocphan')
+      .where('Course.id = :id', { id })
+      .getMany();
+  }
+
+  async svGetCourseRegistered(id: number) {
+    const data = await this.courseRepo
+      .createQueryBuilder('Course')
+      .leftJoinAndSelect('Course.hocphans', 'Hocphan')
+      .getMany();
+    return data.filter((item) => {
+      return item.hocphans.find((hocphan) => hocphan.student_id === id);
+    });
+  }
+
+  async svGetCourse(id: number) {
+    const data = await this.courseRepo
+      .createQueryBuilder('Course')
+      .leftJoinAndSelect('Course.hocphans', 'Hocphan')
+      .getMany();
+    return data.filter((item) => {
+      return !item.hocphans.find((hocphan) => hocphan.student_id === id);
+    });
+  }
 }

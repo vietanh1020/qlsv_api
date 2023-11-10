@@ -15,7 +15,7 @@ import { Course } from './entities/course.entity';
 
 @Controller('course')
 export class CourseController {
-  constructor(private readonly courseService: CourseService) { }
+  constructor(private readonly courseService: CourseService) {}
 
   @Post()
   create(@Body() createCourseDto: CreateCourseDto) {
@@ -40,8 +40,18 @@ export class CourseController {
     return this.courseService.update(+id, updateCourseDto);
   }
 
+  @Get('/registered/:id')
+  async svGetCourseRegistered(@Param('id') id: string) {
+    return await this.courseService.svGetCourseRegistered(+id);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.courseService.remove(+id);
+  }
+
+  @Get('/sv/dkmh/:id')
+  svGetCourse(@Param('id') id: string) {
+    return this.courseService.svGetCourse(+id);
   }
 }

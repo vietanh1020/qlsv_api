@@ -19,11 +19,22 @@ export class ScoreService {
   ) {}
 
   async svGetDiem(id: number) {
-    return await this.scoreRepo
-      .createQueryBuilder('score')
-      .leftJoin('score.sv', 'sv')
-      .select(['score.total'])
-      .where('sv.id = :id', { id });
+    const data = await this.scoreRepo
+      .createQueryBuilder('Score')
+      .leftJoinAndSelect('Score.course', 'Course')
+      .where('Score.user_id = :id', { id })
+      .getMany();
+
+    return data.map((element) => {
+      const { course, ...tmp } = element;
+      delete tmp.id;
+      return {
+        courseId: course.id,
+        name: course.name,
+        soTc: course.so_tc,
+        ...tmp,
+      };
+    });
   }
 
   convertToLetterGrade(score) {

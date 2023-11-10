@@ -1,5 +1,13 @@
+import { Hocphan } from 'src/hocphan/entities/hocphan.entity';
 import { Score } from 'src/score/entities/score.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Course {
@@ -44,4 +52,7 @@ export class Course {
 
   @OneToMany(() => Score, (score) => score.course)
   scores: Score[];
+
+  @OneToMany(() => Hocphan, (hocphan) => hocphan.course)
+  hocphans: Hocphan[];
 }

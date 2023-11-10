@@ -12,10 +12,10 @@ import { ScoreService } from './score.service';
 
 @Controller('score')
 export class ScoreController {
-  constructor(private readonly scoreService: ScoreService) { }
+  constructor(private readonly scoreService: ScoreService) {}
 
   @Get('/student/:id')
-  svGetDiem(@Param() id: string) {
+  svGetDiem(@Param() { id }: any) {
     return this.scoreService.svGetDiem(+id);
   }
 
@@ -31,7 +31,10 @@ export class ScoreController {
   }
 
   @Get('/admin/:course_id/:student_name')
-  adminGetDiemCourseSV(@Param('course_id') course_id: number, @Param('student_name') student_name: string) {
+  adminGetDiemCourseSV(
+    @Param('course_id') course_id: number,
+    @Param('student_name') student_name: string,
+  ) {
     return this.scoreService.adminGetDiemCourseSV(course_id, student_name);
   }
 
@@ -50,7 +53,10 @@ export class ScoreController {
   }
 
   @Post('/course/:id')
-  updateDiemSv(@Param('id') id: number, @Body() UpdateScoreDto: UpdateScoreDto) {
+  updateDiemSv(
+    @Param('id') id: number,
+    @Body() UpdateScoreDto: UpdateScoreDto,
+  ) {
     return this.scoreService.updateDiemSV(id, UpdateScoreDto);
   }
 }

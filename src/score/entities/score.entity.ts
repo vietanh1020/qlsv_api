@@ -1,23 +1,27 @@
 // Trong file score.entity.ts
 import { Course } from 'src/course/entities/course.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 export class Score {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
-  // student_id: number;
-
-  @Column('double', { nullable: true })
+  @Column({ nullable: true })
   middle: number;
 
-  @Column('double', { nullable: true })
+  @Column({ nullable: true })
   final: number;
 
-  @Column('double', { nullable: true })
+  @Column({ nullable: true })
   total: number;
 
   @Column()
