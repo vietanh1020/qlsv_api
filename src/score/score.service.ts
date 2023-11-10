@@ -16,27 +16,22 @@ export class ScoreService {
     private readonly scoreRepo: Repository<Score>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-  ) { }
+  ) {}
 
   async svGetDiem(id: number) {
     return await this.scoreRepo
       .createQueryBuilder('score')
       .leftJoin('score.sv', 'sv')
       .select(['score.total'])
-      .where('sv.id = :id', { id })
+      .where('sv.id = :id', { id });
   }
 
-
   convertToLetterGrade(score) {
-    if (score >= 9) {
-      return 'A';
-    } else if (score >= 8) {
-      return 'B';
-    } else if (score >= 7) {
-      return 'C';
-    } else {
-      return 'D';
-    }
+    if (score >= 9) return 'A';
+    if (score >= 8) return 'B';
+    if (score >= 7) return 'C';
+    if (score >= 4) return 'D';
+    return 'F';
   }
 
   async demDiem(id: number) {
@@ -47,14 +42,16 @@ export class ScoreService {
       .where('sv.id = :id', { id })
       .getMany();
 
-    const scoreValues = (await scores).map(score => score.total);
+    const scoreValues = (await scores).map((score) => score.total);
 
-    const letterGrades = scoreValues.map(score => this.convertToLetterGrade(score));
+    const letterGrades = scoreValues.map((score) =>
+      this.convertToLetterGrade(score),
+    );
     const count = {
-      'A': 0,
-      'B': 0,
-      'C': 0,
-      'D': 0
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
     };
     for (const grade of letterGrades) {
       if (count.hasOwnProperty(grade)) {
@@ -78,9 +75,14 @@ export class ScoreService {
       .leftJoinAndSelect('Score.course', 'Course')
       .leftJoinAndSelect('Score.user', 'User')
       .where('Score.course.id = :courseId', { courseId: id })
-      .select(['Score', 'User.firstName', 'User.lastName', 'User.class', 'User.email'])
+      .select([
+        'Score',
+        'User.firstName',
+        'User.lastName',
+        'User.class',
+        'User.email',
+      ])
       .getMany();
-
   }
 
   async adminGetDiemCourseSV(id: number, student_name: string) {
@@ -88,11 +90,19 @@ export class ScoreService {
       .createQueryBuilder('Score')
       .leftJoinAndSelect('Score.course', 'Course')
       .leftJoinAndSelect('Score.user', 'User')
-      .where('Score.course.id = :courseId and User.lastName LIKE :studentName', { courseId: id, studentName: `%${student_name}%` })
-      .select(['Score', 'User.firstName', 'User.lastName', 'User.class', 'User.email'])
+      .where(
+        'Score.course.id = :courseId and User.lastName LIKE :studentName',
+        { courseId: id, studentName: `%${student_name}%` },
+      )
+      .select([
+        'Score',
+        'User.firstName',
+        'User.lastName',
+        'User.class',
+        'User.email',
+      ])
       .getMany();
   }
-
 
   // async adminGetDiemCourseSV(id: number, student_name: string) {
   //   return this.scoreRepo
@@ -141,46 +151,47 @@ export class ScoreService {
         .createQueryBuilder('Score')
         .leftJoinAndSelect('Score.user', 'User')
         .leftJoinAndSelect('Score.course', 'Course')
-        .where('Score.course.id = :courseId and Score.user.id = :userId', { courseId: id_course, userId: existingUser.id })
+        .where('Score.course.id = :courseId and Score.user.id = :userId', {
+          courseId: id_course,
+          userId: existingUser.id,
+        })
         .getOne();
       if (score) {
         const { final, middle } = updateScoreDto;
         const scoreUpdate = {
           final,
-          middle
-        }
-        console.log('Update điểm đã có')
+          middle,
+        };
+        console.log('Update điểm đã có');
         return this.scoreRepo.update(score.id, scoreUpdate);
-      }
-      else {
-        console.log('Update điểm chưa có')
+      } else {
+        console.log('Update điểm chưa có');
         const course = await this.courseRepo.findOne({
           where: {
-            id: id_course
-          }
+            id: id_course,
+          },
         });
 
         if (course) {
           const score = await this.scoreRepo.save({
             user: existingUser,
             course: course,
-            ...updateScoreDto
+            ...updateScoreDto,
           });
           return score;
         } else {
-          console.log("Course not found");
+          console.log('Course not found');
           return BadRequestException;
         }
       }
-    }
-    else {
+    } else {
       const { firstName, lastName, email, classN } = updateScoreDto;
       const userCreate = {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        class: classN
-      }
+        class: classN,
+      };
       await this.userRepo.save(userCreate);
       console.log('Gọi Update điểm chưa có');
       return this.updateDiemSV(id_course, updateScoreDto);

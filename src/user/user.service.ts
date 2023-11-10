@@ -1,6 +1,10 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Like, Repository } from 'typeorm';
 import { LoginDto, CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 
@@ -9,7 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-  ) { }
+  ) {}
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
@@ -26,7 +30,7 @@ export class UserService {
 
   async createSv(createUserDto: CreateUserDto) {
     return await this.userRepo.save({
-      ...createUserDto
+      ...createUserDto,
     });
   }
 
@@ -34,17 +38,23 @@ export class UserService {
     const sv = await this.userRepo
       .createQueryBuilder('User')
       .where('User.email = :masv', { masv: msv })
-      .getOne()
-    return sv == null
-  }
-  async getAll() {
-    return await this.userRepo.find()
+      .getOne();
+    return sv == null;
   }
 
-  async getbyName(student_name: string) {
+  async getAll(search: string) {
     return await this.userRepo
       .createQueryBuilder('User')
-      .where('User.lastName LIKE :studentName', { studentName: `%${student_name}%` })
+      .where('User.role = :id', { id: 2 })
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('User.lastName LIKE :studentName', {
+            studentName: `%${search}%`,
+          }).orWhere('User.email LIKE :studentName', {
+            studentName: `%${search}%`,
+          });
+        }),
+      )
       .getMany();
   }
 
